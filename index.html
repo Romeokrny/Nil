@@ -31,9 +31,9 @@ padding:20px;
 
 /* coeur intro */
 #bigHeart{
-font-size:80px;
+font-size:85px;
 cursor:pointer;
-animation:pulse 1.5s infinite;
+animation:pulse 1.4s infinite;
 }
 
 @keyframes pulse{
@@ -42,14 +42,15 @@ animation:pulse 1.5s infinite;
 100%{transform:scale(1);}
 }
 
-/* boutons */
+/* zone boutons */
 .buttons{
 margin-top:40px;
 position:relative;
 width:280px;
-height:160px;
+height:180px;
 }
 
+/* boutons */
 button{
 padding:15px 25px;
 font-size:18px;
@@ -58,21 +59,22 @@ border-radius:15px;
 cursor:pointer;
 position:absolute;
 touch-action:manipulation;
+transition:0.2s;
 }
 
 #yes{
-left:20px;
-top:50px;
 background:#ff4d6d;
+left:30px;
+top:70px;
 }
 
 #no{
-right:20px;
-top:50px;
 background:#777;
+right:30px;
+top:70px;
 }
 
-/* final gifs */
+/* gifs final */
 #final img{
 width:220px;
 margin-top:15px;
@@ -88,8 +90,8 @@ border-radius:15px;
 <source src="https://archive.org/download/toto-cutugno-l-italiano/Toto%20Cutugno%20-%20L%27Italiano.mp3">
 </audio>
 
-<audio id="musicYes" preload="auto">
-<source src="https://archive.org/download/umberto-tozzi-ti-amo/Umberto%20Tozzi%20-%20Ti%20Amo.mp3">
+<audio id="musicYes" preload="auto" loop>
+<source src="https://archive.org/download/sara-perche-ti-amo/Sar%C3%A0%20perch%C3%A9%20ti%20amo.mp3">
 </audio>
 
 <!-- INTRO -->
@@ -117,7 +119,7 @@ Nil, Sevgililer Günü'nde benim sevgilim olur musun ? 🌹
 <div class="page" id="final" style="display:none;">
 <h1>Je t'aime Nil 💕</h1>
 
-<img src="https://media1.tenor.com/m/HSxxt1scQXYAAAAC/cat-hugs.gif">
+<img src="https://tenor.com/fr/view/a-gif-1444707562716253851.gif">
 <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWYzbXY2NWU4enY2NTY4MTJlbDA0dXplOXpjbGRzcjhmNTloOGI4aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/C8ih1zB9e9KJLySClx/giphy.gif">
 </div>
 
@@ -137,15 +139,14 @@ const musicYes=document.getElementById("musicYes");
 
 let noCount=0;
 
-/* --- INTRO CLICK --- */
+/* INTRO */
 heart.addEventListener("click",()=>{
 musicIntro.play().catch(()=>{});
 intro.style.display="none";
 question.style.display="flex";
 });
 
-
-/* --- BOUTON NON SAFE --- */
+/* BOUTON NON VERSION CLASSIQUE */
 function moveNo(){
 
 noCount++;
@@ -161,36 +162,21 @@ let newY=Math.random()*maxY;
 no.style.left=newX+"px";
 no.style.top=newY+"px";
 
-yes.style.transform=`scale(${1+noCount*0.1})`;
+/* grossir bouton oui */
+yes.style.transform=`scale(${1+noCount*0.15})`;
+
+/* texte troll */
+if(noCount==1) no.innerText="Même pas ? 🥺";
+if(noCount==2) no.innerText="T'es sûre ? 😢";
+if(noCount==3) no.innerText="Réfléchis bien 😭";
+if(noCount>=4) no.innerText="NIL TU DOIS DIRE OUI ❤️";
 }
 
-/* esquive souris */
-document.addEventListener("mousemove",(e)=>{
-let rect=no.getBoundingClientRect();
+/* clic souris + tactile */
+no.addEventListener("click",moveNo);
+no.addEventListener("touchstart",moveNo);
 
-let dist=Math.hypot(
-e.clientX-(rect.left+rect.width/2),
-e.clientY-(rect.top+rect.height/2)
-);
-
-if(dist<100) moveNo();
-});
-
-/* esquive tactile */
-document.addEventListener("touchstart",(e)=>{
-let touch=e.touches[0];
-let rect=no.getBoundingClientRect();
-
-let dist=Math.hypot(
-touch.clientX-(rect.left+rect.width/2),
-touch.clientY-(rect.top+rect.height/2)
-);
-
-if(dist<100) moveNo();
-});
-
-
-/* --- BOUTON OUI --- */
+/* BOUTON OUI */
 yes.addEventListener("click",()=>{
 
 musicIntro.pause();
