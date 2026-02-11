@@ -7,27 +7,30 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-
 body{
 font-family:'Segoe UI',sans-serif;
 height:100vh;
 overflow:hidden;
-background:linear-gradient(135deg,#ff758c,#ff7eb3);
-display:flex;
-justify-content:center;
-align-items:center;
 color:white;
 text-align:center;
+background:black;
 }
 
-/* container principal */
-#app{
+/* fond animé romantique */
+.background{
+position:fixed;
 width:100%;
-max-width:420px;
-padding:25px;
+height:100%;
+background:radial-gradient(circle at center,#ff7eb3,#ff758c,#ff4d6d);
+animation:bgMove 8s infinite alternate;
+z-index:-1;
+}
+@keyframes bgMove{
+0%{filter:hue-rotate(0deg);}
+100%{filter:hue-rotate(30deg);}
 }
 
-/* fond coeur animé */
+/* pluie coeurs */
 .heart{
 position:fixed;
 font-size:20px;
@@ -35,87 +38,79 @@ animation:float 6s linear infinite;
 opacity:0.7;
 pointer-events:none;
 }
-
 @keyframes float{
 from{transform:translateY(100vh);}
 to{transform:translateY(-10vh);}
 }
 
-/* texte machine à écrire */
-.typewriter{
-overflow:hidden;
-white-space:nowrap;
-border-right:3px solid white;
-animation:typing 3s steps(40,end),blink .7s infinite;
+/* pages */
+.page{
+position:absolute;
+width:100%;
+height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:20px;
 }
 
-@keyframes typing{
-from{width:0}
-to{width:100%}
+/* intro coeur */
+#bigHeart{
+font-size:80px;
+cursor:pointer;
+animation:pulse 2s infinite;
+}
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.2);}
+100%{transform:scale(1);}
 }
 
-@keyframes blink{
-50%{border-color:transparent}
-}
-
-/* boutons */
+/* question */
 .buttons{
 margin-top:40px;
 position:relative;
 height:80px;
+width:260px;
 }
 
 button{
-padding:18px 28px;
+padding:15px 25px;
 font-size:18px;
 border:none;
 border-radius:15px;
 cursor:pointer;
-transition:.3s;
 touch-action:manipulation;
 }
 
-/* bouton oui glow */
 #yes{
 background:#ff4d6d;
-color:white;
 box-shadow:0 0 20px #ff4d6d;
-animation:pulse 2s infinite;
-}
-
-@keyframes pulse{
-0%{box-shadow:0 0 10px #ff4d6d;}
-50%{box-shadow:0 0 35px #ff4d6d;}
-100%{box-shadow:0 0 10px #ff4d6d;}
 }
 
 #no{
 background:#666;
-color:white;
 position:absolute;
-left:60%;
-top:0;
+left:150px;
 }
 
-/* page finale */
-#final{
-display:none;
-animation:fade 1s;
+/* transition */
+.fade{
+animation:fade 1s forwards;
 }
-
 @keyframes fade{
-from{opacity:0}
-to{opacity:1}
+from{opacity:1;}
+to{opacity:0;}
 }
 
+/* final */
 #final img{
-width:80%;
-max-width:260px;
-border-radius:15px;
+width:220px;
 margin-top:20px;
+border-radius:15px;
 animation:bounce 1s;
 }
-
 @keyframes bounce{
 0%{transform:scale(0);}
 70%{transform:scale(1.2);}
@@ -126,13 +121,25 @@ animation:bounce 1s;
 
 <body>
 
-<div id="app">
+<div class="background"></div>
 
-<div id="question">
-<h1 class="typewriter">Roméo ❤️ Nil</h1>
+<!-- AUDIO -->
+<audio id="music">
+<source src="https://archive.org/download/toto-cutugno-l-italiano/Toto%20Cutugno%20-%20L%27Italiano.mp3">
+</audio>
 
-<p style="margin-top:30px;font-size:1.2em;line-height:1.5em;">
-Buongiorno Principessaaa,<br><br>
+<!-- INTRO -->
+<div class="page" id="intro">
+<h1>Un message pour toi Nil ❤️</h1>
+<p style="margin:20px;">Clique sur le cœur...</p>
+<div id="bigHeart">💖</div>
+</div>
+
+<!-- QUESTION -->
+<div class="page" id="question" style="display:none;">
+<h1>Roméo ❤️ Nil</h1>
+
+<p style="margin-top:30px;font-size:1.2em;">
 Hayatıma girdiğinden beri her şey daha güzel oldu...<br><br>
 Nil, Sevgililer Günü'nde benim sevgilim olur musun ? 🌹
 </p>
@@ -143,7 +150,8 @@ Nil, Sevgililer Günü'nde benim sevgilim olur musun ? 🌹
 </div>
 </div>
 
-<div id="final">
+<!-- FINAL -->
+<div class="page" id="final" style="display:none;">
 <h1>Je t'aime Nil 💕</h1>
 <p style="margin-top:20px;font-size:1.4em;">
 Tu viens de rendre Roméo le plus heureux du monde 🥹
@@ -152,18 +160,19 @@ Tu viens de rendre Roméo le plus heureux du monde 🥹
 <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWYzbXY2NWU4enY2NTY4MTJlbDA0dXplOXpjbGRzcjhmNTloOGI4aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/C8ih1zB9e9KJLySClx/giphy.gif">
 </div>
 
-</div>
-
 <script>
 
-const yes=document.getElementById("yes");
-const no=document.getElementById("no");
+const intro=document.getElementById("intro");
 const question=document.getElementById("question");
 const final=document.getElementById("final");
+const heart=document.getElementById("bigHeart");
+const yes=document.getElementById("yes");
+const no=document.getElementById("no");
+const music=document.getElementById("music");
 
 let noCount=0;
 
-/* pluie de coeurs */
+/* pluie coeurs */
 setInterval(()=>{
 let h=document.createElement("div");
 h.className="heart";
@@ -174,12 +183,36 @@ document.body.appendChild(h);
 setTimeout(()=>h.remove(),6000);
 },400);
 
-/* bouton non qui fuit */
+/* intro -> question */
+heart.onclick=()=>{
+intro.classList.add("fade");
+setTimeout(()=>{
+intro.style.display="none";
+question.style.display="flex";
+},900);
+};
+
+/* bouton non fuit avant clic */
+function dodgeButton(e){
+
+let rect=no.getBoundingClientRect();
+
+let mouseX=e.touches?e.touches[0].clientX:e.clientX;
+let mouseY=e.touches?e.touches[0].clientY:e.clientY;
+
+let dist=Math.hypot(mouseX-(rect.left+rect.width/2),
+mouseY-(rect.top+rect.height/2));
+
+if(dist<120){
+moveNo();
+}
+}
+
 function moveNo(){
 noCount++;
 
-let maxX=window.innerWidth-no.offsetWidth;
-let maxY=window.innerHeight-no.offsetHeight;
+let maxX=window.innerWidth-no.offsetWidth-20;
+let maxY=window.innerHeight-no.offsetHeight-20;
 
 no.style.left=Math.random()*maxX+"px";
 no.style.top=Math.random()*maxY+"px";
@@ -187,40 +220,34 @@ no.style.top=Math.random()*maxY+"px";
 if(noCount==1)no.innerText="Même pas un peu ? 🥺";
 if(noCount==2)no.innerText="S'il te plaît 😢";
 if(noCount==3)no.innerText="Pitié 😭";
-if(noCount>=4)no.innerText="Tu peux pas dire non 😏";
+if(noCount>=4)no.innerText="Impossible de refuser 😏";
 
 yes.style.transform=`scale(${1+noCount*0.1})`;
 }
 
-no.addEventListener("click",moveNo);
-no.addEventListener("touchstart",moveNo);
+document.addEventListener("mousemove",dodgeButton);
+document.addEventListener("touchmove",dodgeButton);
 
 /* bouton oui */
-yes.addEventListener("click",()=>{
-
+yes.onclick=()=>{
+music.play();
 question.style.display="none";
-final.style.display="block";
-
+final.style.display="flex";
 startConfetti();
-
-});
+};
 
 /* confettis */
 function startConfetti(){
-
 setInterval(()=>{
-
 let c=document.createElement("div");
 c.innerHTML=["🎉","💖","✨","🥰","❤️"][Math.floor(Math.random()*5)];
 c.style.position="fixed";
 c.style.left=Math.random()*100+"vw";
 c.style.top="-20px";
 c.style.fontSize=Math.random()*20+20+"px";
-c.style.animation="fall 3s linear";
+c.style.animation="float 3s linear";
 document.body.appendChild(c);
-
 setTimeout(()=>c.remove(),3000);
-
 },150);
 }
 
