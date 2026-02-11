@@ -6,34 +6,35 @@
 <title>Roméo ❤️ Nil</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
 
 body{
-font-family:Segoe UI, sans-serif;
-height:100vh;
+margin:0;
+font-family:'Segoe UI', sans-serif;
 overflow:hidden;
-color:white;
-text-align:center;
-background:linear-gradient(45deg,#ff758c,#ff7eb3);
 }
 
-/* pages */
+/* ----------- PAGES ----------- */
 .page{
 position:absolute;
 width:100%;
 height:100%;
 display:flex;
-flex-direction:column;
 justify-content:center;
 align-items:center;
-padding:20px;
+flex-direction:column;
 }
 
-/* coeur intro */
-#bigHeart{
-font-size:85px;
+/* ----------- INTRO COEUR ----------- */
+
+#intro{
+background:linear-gradient(45deg,#ff758c,#ff7eb3);
+color:white;
+}
+
+#heart{
+font-size:90px;
 cursor:pointer;
-animation:pulse 1.4s infinite;
+animation:pulse 1.5s infinite;
 }
 
 @keyframes pulse{
@@ -42,152 +43,275 @@ animation:pulse 1.4s infinite;
 100%{transform:scale(1);}
 }
 
-/* zone boutons */
-.buttons{
-margin-top:40px;
-position:relative;
-width:280px;
+/* ----------- ENVELOPPE ----------- */
+
+#envelopePage{
+background:#fcd5ce;
+display:none;
+}
+
+.envelope{
+width:260px;
 height:180px;
-}
-
-/* boutons */
-button{
-padding:15px 25px;
-font-size:18px;
-border:none;
-border-radius:15px;
+background:#ffb5a7;
+position:relative;
 cursor:pointer;
+}
+
+.flap{
 position:absolute;
-touch-action:manipulation;
-transition:0.2s;
+width:100%;
+height:100%;
+background:#f28482;
+clip-path:polygon(0 0,100% 0,50% 60%);
+transition:0.8s;
 }
 
-#yes{
-background:#ff4d6d;
-left:30px;
-top:70px;
+.envelope.open .flap{
+transform:rotateX(180deg);
+transform-origin:top;
 }
 
-#no{
-background:#777;
-right:30px;
-top:70px;
+/* ----------- CARTE PAPIER ----------- */
+
+#cardPage{
+display:none;
+background:#ffe5ec;
 }
 
-/* gifs final */
+.card{
+background:url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+background-color:white;
+padding:30px;
+border-radius:20px;
+width:90%;
+max-width:380px;
+box-shadow:0 15px 30px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+/* texte machine */
+#typedText{
+min-height:80px;
+color:#ff4d6d;
+font-size:18px;
+}
+
+/* choix */
+.choice{
+margin-top:25px;
+display:flex;
+flex-direction:column;
+gap:15px;
+font-size:20px;
+}
+
+label{
+cursor:pointer;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+input{
+width:22px;
+height:22px;
+cursor:pointer;
+}
+
+/* glow oui */
+#yesLabel{
+animation:glow 2s infinite;
+}
+
+@keyframes glow{
+0%{text-shadow:0 0 5px pink;}
+50%{text-shadow:0 0 20px hotpink;}
+100%{text-shadow:0 0 5px pink;}
+}
+
+#noMessages{
+margin-top:15px;
+color:#ff4d6d;
+font-weight:bold;
+min-height:40px;
+}
+
+/* ----------- FINAL ----------- */
+
+#final{
+display:none;
+background:linear-gradient(45deg,#ff758c,#ff7eb3);
+color:white;
+text-align:center;
+}
+
 #final img{
 width:220px;
 margin-top:15px;
 border-radius:15px;
 }
+
+/* pétales */
+.petal{
+position:fixed;
+top:-20px;
+font-size:20px;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh);
+}
+}
+
 </style>
 </head>
 
 <body>
 
-<!-- MUSIQUES -->
-<audio id="musicIntro" preload="auto" loop>
-<source src="https://archive.org/download/toto-cutugno-l-italiano/Toto%20Cutugno%20-%20L%27Italiano.mp3">
-</audio>
-
-<audio id="musicYes" preload="auto" loop>
+<audio id="music" loop>
 <source src="https://archive.org/download/sara-perche-ti-amo/Sar%C3%A0%20perch%C3%A9%20ti%20amo.mp3">
 </audio>
 
 <!-- INTRO -->
 <div class="page" id="intro">
 <h1>Un message pour toi Nil ❤️</h1>
-<p style="margin:20px;">Clique sur le cœur</p>
-<div id="bigHeart">💖</div>
+<p>Clique sur le cœur</p>
+<div id="heart">💖</div>
 </div>
 
-<!-- QUESTION -->
-<div class="page" id="question" style="display:none;">
-<h1>Roméo ❤️ Nil</h1>
-
-<p style="margin-top:30px;font-size:1.2em;">
-Nil, Sevgililer Günü'nde benim sevgilim olur musun ? 🌹
-</p>
-
-<div class="buttons" id="btnZone">
-<button id="yes">Oui 😍</button>
-<button id="no">Non 😢</button>
+<!-- ENVELOPPE -->
+<div class="page" id="envelopePage">
+<div class="envelope" id="envelope">
+<div class="flap"></div>
 </div>
+<p>Clique pour ouvrir 💌</p>
+</div>
+
+<!-- CARTE -->
+<div class="page" id="cardPage">
+
+<div class="card">
+
+<h2>Roméo ❤️ Nil</h2>
+
+<p id="typedText"></p>
+
+<div class="choice">
+
+<label id="yesLabel">
+<input type="checkbox" id="yesBox">
+Oui 💖
+</label>
+
+<label>
+<input type="checkbox" id="noBox">
+Non 😢
+</label>
+
+</div>
+
+<div id="noMessages"></div>
+
+</div>
+
 </div>
 
 <!-- FINAL -->
-<div class="page" id="final" style="display:none;">
+<div class="page" id="final">
+
 <h1>Je t'aime Nil 💕</h1>
 
-<img src="https://media1.tenor.com/m/HSxxt1scQXYAAAAC/cat-hugs.gif">
+<img src="https://tenor.com/fr/view/a-gif-1444707562716253851.gif">
 <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWYzbXY2NWU4enY2NTY4MTJlbDA0dXplOXpjbGRzcjhmNTloOGI4aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/C8ih1zB9e9KJLySClx/giphy.gif">
+
 </div>
 
 <script>
 
+/* pages */
 const intro=document.getElementById("intro");
-const question=document.getElementById("question");
+const envelopePage=document.getElementById("envelopePage");
+const cardPage=document.getElementById("cardPage");
 const final=document.getElementById("final");
 
-const heart=document.getElementById("bigHeart");
-const yes=document.getElementById("yes");
-const no=document.getElementById("no");
-const zone=document.getElementById("btnZone");
+const heart=document.getElementById("heart");
+const envelope=document.getElementById("envelope");
 
-const musicIntro=document.getElementById("musicIntro");
-const musicYes=document.getElementById("musicYes");
+/* typing text */
+const text="Nil, Sevgililer Günü'nde benim sevgilim olur musun ? 🌹";
+let i=0;
+const typed=document.getElementById("typedText");
+
+function typeWriter(){
+if(i<text.length){
+typed.innerHTML+=text.charAt(i);
+i++;
+setTimeout(typeWriter,40);
+}
+}
+
+/* intro -> enveloppe */
+heart.onclick=()=>{
+intro.style.display="none";
+envelopePage.style.display="flex";
+};
+
+/* enveloppe -> carte */
+envelope.onclick=()=>{
+envelope.classList.add("open");
+setTimeout(()=>{
+envelopePage.style.display="none";
+cardPage.style.display="flex";
+typeWriter();
+},700);
+};
+
+/* gestion NON */
+const noBox=document.getElementById("noBox");
+const yesBox=document.getElementById("yesBox");
+const msg=document.getElementById("noMessages");
 
 let noCount=0;
 
-/* INTRO */
-heart.addEventListener("click",()=>{
-musicIntro.play().catch(()=>{});
-intro.style.display="none";
-question.style.display="flex";
-});
+const noTexts=[
+"Même pas un petit oui ? 🥺",
+"Tu es sûre ? 😢",
+"Réfléchis encore 😭",
+"Erreur système ❤️",
+"Impossible de refuser Roméo 😌"
+];
 
-/* BOUTON NON VERSION CLASSIQUE */
-function moveNo(){
+noBox.onclick=(e)=>{
+e.preventDefault();
 
+msg.innerText=noTexts[Math.min(noCount,noTexts.length-1)];
 noCount++;
+};
 
-let zoneRect=zone.getBoundingClientRect();
+/* OUI */
+yesBox.onclick=()=>{
 
-let maxX=zoneRect.width-no.offsetWidth;
-let maxY=zoneRect.height-no.offsetHeight;
-
-let newX=Math.random()*maxX;
-let newY=Math.random()*maxY;
-
-no.style.left=newX+"px";
-no.style.top=newY+"px";
-
-/* grossir bouton oui */
-yes.style.transform=`scale(${1+noCount*0.15})`;
-
-/* texte troll */
-if(noCount==1) no.innerText="Même pas ? 🥺";
-if(noCount==2) no.innerText="T'es sûre ? 😢";
-if(noCount==3) no.innerText="Réfléchis bien 😭";
-if(noCount>=4) no.innerText="NIL TU DOIS DIRE OUI ❤️";
-}
-
-/* clic souris + tactile */
-no.addEventListener("click",moveNo);
-no.addEventListener("touchstart",moveNo);
-
-/* BOUTON OUI */
-yes.addEventListener("click",()=>{
-
-musicIntro.pause();
-musicIntro.currentTime=0;
-
-musicYes.play().catch(()=>{});
-
-question.style.display="none";
+cardPage.style.display="none";
 final.style.display="flex";
 
-});
+document.getElementById("music").play();
+
+/* pétales */
+setInterval(()=>{
+let p=document.createElement("div");
+p.innerHTML="🌹";
+p.classList.add("petal");
+p.style.left=Math.random()*100+"vw";
+p.style.animationDuration=(3+Math.random()*2)+"s";
+document.body.appendChild(p);
+
+setTimeout(()=>p.remove(),5000);
+},300);
+
+};
 
 </script>
 
