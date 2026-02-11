@@ -7,41 +7,17 @@
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
+
 body{
-font-family:'Segoe UI',sans-serif;
+font-family:Segoe UI, sans-serif;
 height:100vh;
 overflow:hidden;
 color:white;
 text-align:center;
-background:black;
+background:linear-gradient(45deg,#ff758c,#ff7eb3);
 }
 
-/* fond animé */
-.background{
-position:fixed;
-width:100%;
-height:100%;
-background:radial-gradient(circle,#ff7eb3,#ff758c,#ff4d6d);
-animation:bgMove 8s infinite alternate;
-z-index:-1;
-}
-@keyframes bgMove{
-0%{filter:hue-rotate(0deg);}
-100%{filter:hue-rotate(30deg);}
-}
-
-/* pluie coeurs */
-.heart{
-position:fixed;
-font-size:20px;
-animation:float 6s linear infinite;
-pointer-events:none;
-}
-@keyframes float{
-from{transform:translateY(100vh);}
-to{transform:translateY(-10vh);}
-}
-
+/* pages */
 .page{
 position:absolute;
 width:100%;
@@ -57,8 +33,9 @@ padding:20px;
 #bigHeart{
 font-size:80px;
 cursor:pointer;
-animation:pulse 2s infinite;
+animation:pulse 1.5s infinite;
 }
+
 @keyframes pulse{
 0%{transform:scale(1);}
 50%{transform:scale(1.2);}
@@ -69,8 +46,8 @@ animation:pulse 2s infinite;
 .buttons{
 margin-top:40px;
 position:relative;
-width:260px;
-height:120px;
+width:280px;
+height:160px;
 }
 
 button{
@@ -79,19 +56,20 @@ font-size:18px;
 border:none;
 border-radius:15px;
 cursor:pointer;
+position:absolute;
 touch-action:manipulation;
 }
 
 #yes{
+left:20px;
+top:50px;
 background:#ff4d6d;
-box-shadow:0 0 20px #ff4d6d;
 }
 
 #no{
-background:#666;
-position:absolute;
-left:140px;
-top:0;
+right:20px;
+top:50px;
+background:#777;
 }
 
 /* final gifs */
@@ -105,21 +83,19 @@ border-radius:15px;
 
 <body>
 
-<div class="background"></div>
-
 <!-- MUSIQUES -->
-<audio id="musicIntro" loop>
+<audio id="musicIntro" preload="auto" loop>
 <source src="https://archive.org/download/toto-cutugno-l-italiano/Toto%20Cutugno%20-%20L%27Italiano.mp3">
 </audio>
 
-<audio id="musicYes">
+<audio id="musicYes" preload="auto">
 <source src="https://archive.org/download/umberto-tozzi-ti-amo/Umberto%20Tozzi%20-%20Ti%20Amo.mp3">
 </audio>
 
 <!-- INTRO -->
 <div class="page" id="intro">
 <h1>Un message pour toi Nil ❤️</h1>
-<p style="margin:20px;">Clique sur le cœur...</p>
+<p style="margin:20px;">Clique sur le cœur</p>
 <div id="bigHeart">💖</div>
 </div>
 
@@ -128,11 +104,10 @@ border-radius:15px;
 <h1>Roméo ❤️ Nil</h1>
 
 <p style="margin-top:30px;font-size:1.2em;">
-Hayatıma girdiğinden beri her şey daha güzel oldu...<br><br>
 Nil, Sevgililer Günü'nde benim sevgilim olur musun ? 🌹
 </p>
 
-<div class="buttons">
+<div class="buttons" id="btnZone">
 <button id="yes">Oui 😍</button>
 <button id="no">Non 😢</button>
 </div>
@@ -141,9 +116,6 @@ Nil, Sevgililer Günü'nde benim sevgilim olur musun ? 🌹
 <!-- FINAL -->
 <div class="page" id="final" style="display:none;">
 <h1>Je t'aime Nil 💕</h1>
-<p style="margin-top:20px;font-size:1.4em;">
-Tu viens de rendre Roméo le plus heureux du monde 🥹
-</p>
 
 <img src="https://media.tenor.com/0AVbKGY_MxMAAAAC/love.gif">
 <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWYzbXY2NWU4enY2NTY4MTJlbDA0dXplOXpjbGRzcjhmNTloOGI4aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/C8ih1zB9e9KJLySClx/giphy.gif">
@@ -154,42 +126,34 @@ Tu viens de rendre Roméo le plus heureux du monde 🥹
 const intro=document.getElementById("intro");
 const question=document.getElementById("question");
 const final=document.getElementById("final");
+
 const heart=document.getElementById("bigHeart");
 const yes=document.getElementById("yes");
 const no=document.getElementById("no");
+const zone=document.getElementById("btnZone");
 
 const musicIntro=document.getElementById("musicIntro");
 const musicYes=document.getElementById("musicYes");
 
 let noCount=0;
 
-/* pluie coeurs */
-setInterval(()=>{
-let h=document.createElement("div");
-h.className="heart";
-h.innerHTML="❤️";
-h.style.left=Math.random()*100+"vw";
-h.style.fontSize=Math.random()*20+15+"px";
-document.body.appendChild(h);
-setTimeout(()=>h.remove(),6000);
-},400);
-
-/* Lancement musique intro après interaction (mobile safe) */
-heart.onclick=()=>{
-musicIntro.play();
-
+/* --- INTRO CLICK --- */
+heart.addEventListener("click",()=>{
+musicIntro.play().catch(()=>{});
 intro.style.display="none";
 question.style.display="flex";
-};
+});
 
-/* zone sécurisée bouton NON */
+
+/* --- BOUTON NON SAFE --- */
 function moveNo(){
 
 noCount++;
 
-let padding=20;
-let maxX=window.innerWidth-no.offsetWidth-padding;
-let maxY=window.innerHeight-no.offsetHeight-padding;
+let zoneRect=zone.getBoundingClientRect();
+
+let maxX=zoneRect.width-no.offsetWidth;
+let maxY=zoneRect.height-no.offsetHeight;
 
 let newX=Math.random()*maxX;
 let newY=Math.random()*maxY;
@@ -197,44 +161,47 @@ let newY=Math.random()*maxY;
 no.style.left=newX+"px";
 no.style.top=newY+"px";
 
-if(noCount==1)no.innerText="Même pas un peu ? 🥺";
-if(noCount==2)no.innerText="S'il te plaît 😢";
-if(noCount==3)no.innerText="Pitié 😭";
-if(noCount>=4)no.innerText="Impossible de refuser 😏";
-
 yes.style.transform=`scale(${1+noCount*0.1})`;
 }
 
-/* esquive PC */
+/* esquive souris */
 document.addEventListener("mousemove",(e)=>{
 let rect=no.getBoundingClientRect();
+
 let dist=Math.hypot(
 e.clientX-(rect.left+rect.width/2),
 e.clientY-(rect.top+rect.height/2)
 );
-if(dist<120) moveNo();
+
+if(dist<100) moveNo();
 });
 
-/* esquive mobile */
-document.addEventListener("touchmove",(e)=>{
+/* esquive tactile */
+document.addEventListener("touchstart",(e)=>{
 let touch=e.touches[0];
 let rect=no.getBoundingClientRect();
+
 let dist=Math.hypot(
 touch.clientX-(rect.left+rect.width/2),
 touch.clientY-(rect.top+rect.height/2)
 );
-if(dist<120) moveNo();
+
+if(dist<100) moveNo();
 });
 
-/* bouton OUI */
-yes.onclick=()=>{
+
+/* --- BOUTON OUI --- */
+yes.addEventListener("click",()=>{
+
 musicIntro.pause();
 musicIntro.currentTime=0;
-musicYes.play();
+
+musicYes.play().catch(()=>{});
 
 question.style.display="none";
 final.style.display="flex";
-};
+
+});
 
 </script>
 
