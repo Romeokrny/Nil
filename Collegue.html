@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roméo ❤️ Nil</title>
+<style>
+body {
+    margin:0; padding:0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    height:100vh; overflow:hidden;
+    text-align:center; color:white;
+}
+
+h1 { margin-top:5vh; font-size:2em; }
+p { font-size:1.2em; line-height:1.5em; margin:2vh; }
+
+#yesBtn, #noBtn {
+    padding:15px 25px;
+    font-size:18px;
+    border:none;
+    border-radius:12px;
+    margin:10px;
+    cursor:pointer;
+    touch-action: manipulation;
+}
+
+#yesBtn { background:#ff4d6d; color:white; }
+#noBtn { background:#777; color:white; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+
+#gifContainer { margin-top:5vh; width:80%; max-width:300px; }
+#gifContainer img { width:100%; border-radius:15px; animation:bounceIn 1s; }
+
+@keyframes bounceIn {
+  0% { transform:scale(0); }
+  70% { transform:scale(1.2); }
+  100% { transform:scale(1); }
+}
+</style>
+</head>
+<body>
+
+<h1>Roméo ❤️ Nil</h1>
+<p>Buongiorno Principessa,<br>
+Hayatıma girdiğinden beri her şey daha güzel oldu...<br><br>
+Nil, Sevgililer Günü'nde benim sevgilim olur musun ? 🌹</p>
+
+<button id="yesBtn">Oui 😍</button>
+<button id="noBtn">Non 😢</button>
+
+<div id="gifContainer"></div>
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const gifContainer = document.getElementById("gifContainer");
+let noCount = 0;
+
+// Bouton NON bouge
+function moveNoBtn() {
+    noCount++;
+    const maxX = document.documentElement.clientWidth - noBtn.offsetWidth;
+    const maxY = document.documentElement.clientHeight - noBtn.offsetHeight;
+    noBtn.style.left = Math.random() * maxX + "px";
+    noBtn.style.top = Math.random() * maxY + "px";
+    if(noCount===1) noBtn.innerText="Même pas un peu ? 🥺";
+    if(noCount===2) noBtn.innerText="S'il te plaît 😢";
+    if(noCount===3) noBtn.innerText="Pitié 😭";
+    if(noCount>=4) noBtn.innerText="NIL T'AS PAS LE CHOIX 😡";
+}
+noBtn.addEventListener("click", moveNoBtn);
+noBtn.addEventListener("touchstart", moveNoBtn);
+
+// Bouton OUI déclenche GIF
+yesBtn.addEventListener("click", () => {
+    gifContainer.innerHTML = '<img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWYzbXY2NWU4enY2NTY4MTJlbDA0dXplOXpjbGRzcjhmNTloOGI4aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/C8ih1zB9e9KJLySClx/giphy.gif" alt="Chat">';
+    alert("OUI 💕 Roméo est super heureux !"); // simple feedback test mobile
+});
+</script>
+
+</body>
+</html>
