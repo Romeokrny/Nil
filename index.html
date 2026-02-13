@@ -205,6 +205,89 @@ color:#d63384;text-align:center;
 
 .petal{position:fixed;top:-20px;font-size:24px;animation:fall linear forwards;filter:drop-shadow(0 4px 8px rgba(255,105,180,0.6));z-index:1000;}
 @keyframes fall{to{transform:translateY(110vh) rotate(360deg);}}
+
+
+#rouletteContainer{
+margin-top:20px;
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:15px;
+}
+
+#roulette{
+background:white;
+border-radius:50%;
+box-shadow:0 10px 25px rgba(0,0,0,0.3);
+}
+
+.pointer{
+font-size:30px;
+margin-bottom:-20px;
+}
+
+#spinBtn{
+padding:12px 25px;
+border:none;
+border-radius:20px;
+cursor:pointer;
+font-size:18px;
+background:#ff4081;
+color:white;
+}
+
+#finalContent{
+display:flex;
+gap:40px;
+align-items:center;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+/* COLONNE GAUCHE */
+#finalLeft{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:10px;
+}
+
+/* COLONNE DROITE */
+#finalRight{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+/* RESPONSIVE MOBILE */
+@media (max-width:768px){
+
+#finalContent{
+flex-direction:column;
+}
+
+#roulette{
+width:250px;
+height:250px;
+}
+}
+
+#rouletteResult{
+margin-top:15px;
+font-size:22px;
+font-weight:600;
+color:#e91e63;
+min-height:30px;
+text-align:center;
+animation:fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+
 </style>
 </head>
 
@@ -247,11 +330,33 @@ Non 😢
 </div>
 
 <div class="page" id="final" style="display:none;">
-<h1>Je t'aime Nil 💕</h1><br>
-<h2>On se revoit bientôt bichette prend soin de toi 😽</h2>
-<img src="https://tenor.com/fr/view/a-gif-1444707562716253851.gif">
-<img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWYzbXY2NWU4enY2NTY4MTJlbDA0dXplOXpjbGRzcjhmNTloOGI4aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/C8ih1zB9e9KJLySClx/giphy.gif">
-</div>
+
+    <div id="finalContent">
+    
+    <div id="finalLeft">
+    <h1>Je t'aime Nil 💕</h1><br>
+    <h2>On se revoit bientôt bichette prend soin de toi 😽</h2>
+    
+    <img src="https://tenor.com/fr/view/a-gif-1444707562716253851.gif">
+    <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExbWYzbXY2NWU4enY2NTY4MTJlbDA0dXplOXpjbGRzcjhmNTloOGI4aCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/C8ih1zB9e9KJLySClx/giphy.gif">
+    </div>
+    
+    <div id="finalRight">
+    
+    <h2>A quel point je t'aime ? 🤔</h2>
+    
+    <div id="rouletteContainer">
+    <div class="pointer">▼</div>
+    <canvas id="roulette" width="300" height="300"></canvas>
+    <button id="spinBtn">Tourner 🎡</button>
+    <div id="rouletteResult"></div>
+    
+    </div>
+    
+    </div>
+    
+    </div>
+    
 
 <!-- TON SCRIPT IDENTIQUE -->
 <script>
@@ -324,6 +429,111 @@ e.preventDefault();
 msg.innerText=noTexts[Math.min(noCount,noTexts.length-1)];
 noCount++;
 };
+
+
+/* -------- ROULETTE TRUQUÉE -------- */
+
+const canvas = document.getElementById("roulette");
+const resultDiv = document.getElementById("rouletteResult");
+const ctx = canvas.getContext("2d");
+
+const choices = ["Pas du tout","Collègue","Bof","Pas Trop","A L'INFINI","Vite Fait"];
+
+/* 👇 CHOISIS LA CASE TRUQUÉE ICI */
+const forcedChoice = "A L'INFINI";
+
+const segments = choices.length;
+const anglePerSegment = 2*Math.PI/segments;
+
+let currentAngle = 0;
+
+function drawWheel(){
+ctx.clearRect(0,0,300,300);
+
+choices.forEach((choice,index)=>{
+
+let start = currentAngle + index * anglePerSegment;
+let end = start + anglePerSegment;
+
+/* segment */
+ctx.beginPath();
+ctx.moveTo(150,150);
+ctx.arc(150,150,150,start,end);
+ctx.closePath();
+
+ctx.fillStyle = `hsl(${index*60},70%,70%)`;
+ctx.fill();
+ctx.stroke();
+
+/* texte */
+ctx.save();
+
+ctx.translate(150,150);
+ctx.rotate(start + anglePerSegment/2);
+
+ctx.fillStyle="black";
+ctx.textAlign="center";
+ctx.textBaseline="middle";
+ctx.font="bold 16px Poppins";
+
+ctx.fillText(choice,80,0);
+
+ctx.restore(); // ⭐ TRÈS IMPORTANT
+
+});
+}
+
+
+if(canvas){
+drawWheel();
+}
+
+function spinWheel(){
+
+let forcedIndex = choices.indexOf(forcedChoice);
+
+/* angle exact de la case */
+let targetAngle = (forcedIndex * anglePerSegment);
+
+/* correction flèche en haut */
+targetAngle += anglePerSegment / 2;
+
+/* correction orientation canvas */
+targetAngle = (3 * Math.PI / 2) - targetAngle;
+
+let spins = 5;
+let finalAngle = spins * 2 * Math.PI + targetAngle;
+
+let duration = 3000;
+let start = null;
+
+function animate(timestamp){
+
+if(!start) start = timestamp;
+let progress = timestamp - start;
+
+let ease = 1 - Math.pow(1 - progress/duration, 3);
+
+currentAngle = finalAngle * ease;
+
+drawWheel();
+
+if(progress < duration){
+requestAnimationFrame(animate);
+}else{
+
+resultDiv.innerText =  forcedChoice;
+
+}
+}
+
+requestAnimationFrame(animate);
+}
+
+
+
+document.getElementById("spinBtn")?.addEventListener("click",spinWheel);
+
 </script>
 
 </body>
